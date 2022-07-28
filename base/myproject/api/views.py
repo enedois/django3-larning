@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from projectBase.models import Item
 from .serializers import ItemSerializer
 from django.shortcuts import get_object_or_404
+from rest_framework import status
 
 
 @api_view(['GET'])
@@ -28,7 +29,7 @@ def postData(request):
     serializer = ItemSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 ##updates the information
 @api_view(['PUT'])
@@ -37,11 +38,11 @@ def updateData(request,pk):
     serializer = ItemSerializer(items, data=request.data)
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
 @api_view(['DELETE'])
 def deleteData(request,pk):
     items = Item.objects.get(pk=pk)
     items.delete()
-    return Response()       
+    return Response(status=status.HTTP_204_NO_CONTENT)       
